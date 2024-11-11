@@ -40,6 +40,6 @@ jobs:
 
     - name: Push Docker image
       run: |
-        echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
         docker tag boston-house-pricing-model ghcr.io/${{ github.repository_owner }}/boston-house-pricing-model:latest
         docker push ghcr.io/${{ github.repository_owner }}/boston-house-pricing-model:latest
