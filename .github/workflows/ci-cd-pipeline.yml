@@ -3,7 +3,12 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
 
 jobs:
   build:
@@ -31,10 +36,10 @@ jobs:
         jupyter nbconvert --execute --inplace feature_selection.ipynb
 
     - name: Build Docker image
-      run: docker build -t ml-model .
+      run: docker build -t boston-house-pricing-model .
 
     - name: Push Docker image
       run: |
-        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        docker tag ml-model ghcr.io/${{ github.repository_owner }}/ml-model:latest
-        docker push ghcr.io/${{ github.repository_owner }}/ml-model:latest
+        echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        docker tag boston-house-pricing-model ghcr.io/${{ github.repository_owner }}/boston-house-pricing-model:latest
+        docker push ghcr.io/${{ github.repository_owner }}/boston-house-pricing-model:latest
