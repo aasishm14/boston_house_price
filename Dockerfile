@@ -2,16 +2,22 @@ FROM python:3.8-slim
 
 WORKDIR /app
 
-# Update this line with the new file name
-COPY flight_price_ML_model.py .  
-COPY app.py .
+# Install required packages
 COPY requirements.txt .
-
-# Add all the model files
-COPY *.joblib .
-
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-CMD ["python", "app.py"]
+# Install Jupyter and nbconvert
+RUN pip install jupyter nbconvert
+
+# Copy notebook files into the image
+COPY exploratory_data_analysis.ipynb .
+COPY feature_engineering.ipynb .
+COPY feature_selection.ipynb .
+
+# Command to convert notebooks to HTML or run them
+CMD jupyter nbconvert --execute --inplace exploratory_data_analysis.ipynb
+CMD jupyter nbconvert --execute --inplace feature_engineering.ipynb
+CMD jupyter nbconvert --execute --inplace feature_selection.ipynb
 
 
