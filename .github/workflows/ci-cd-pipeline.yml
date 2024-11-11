@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-  packages: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,15 +22,19 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install jupyter nbconvert
 
-    - name: Run model script
-      run: python flight_price_ML_model.py
+    - name: Run and Convert Notebooks
+      run: |
+        jupyter nbconvert --execute --inplace exploratory_data_analysis.ipynb
+        jupyter nbconvert --execute --inplace feature_engineering.ipynb
+        jupyter nbconvert --execute --inplace feature_selection.ipynb
 
     - name: Build Docker image
       run: docker build -t ml-model .
 
     - name: Push Docker image
       run: |
-        echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         docker tag ml-model ghcr.io/${{ github.repository_owner }}/ml-model:latest
         docker push ghcr.io/${{ github.repository_owner }}/ml-model:latest

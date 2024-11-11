@@ -1,10 +1,10 @@
 flask
 joblib
+seaborn
 pandas
 scikit-learn
-seaborn
-xgboost
-catboost
-lightgbm
+joblib
+numpy
 matplotlib
-seaborn
+jupyter
+nbconvert
